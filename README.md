@@ -1,7 +1,7 @@
 # Trashget Project - Hardware Version
 ## _Thesis Project on Campus_
 
-[![N|Solid](https://4.bp.blogspot.com/-L0gB6SYxsDU/Wq2m6mnVVCI/AAAAAAAASqQ/XUcQKO6tHPEmGGKkzvT7qrdFTGIcsc-NgCLcBGAs/s1600/Android_Arduino_Logo.png)](https://cektrend.com)
+[![N|Trashget](https://raw.githubusercontent.com/saipulmuiz/Trashget-Hardware/master/Image/Android_Arduino_Logo.png)](https://cektrend.com)
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
