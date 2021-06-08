@@ -19,7 +19,7 @@ Trashget is a project about social, this tools can detect the garbage automatic 
 
 ## Techstack
 
-Dillinger uses a number of open source projects to work properly:
+Trashget Hardware uses a number of open source projects to work properly:
 
 - [Arduino](https://arduino.cc/) - IDE for arduino!
 - [Firebase Library](https://github.com/mobizt/Firebase-ESP-Client) - Library firebase for arduino
@@ -27,6 +27,8 @@ Dillinger uses a number of open source projects to work properly:
 ## Installation
 
 ```sh
+[![N|Trashget](https://raw.githubusercontent.com/saipulmuiz/Trashget-Hardware/master/Image/Schematic%20-%20Design%20Project%20Trashget_bb.jpg)](https://cektrend.com)
+
 On Going
 ```
 
