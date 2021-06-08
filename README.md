@@ -26,9 +26,9 @@ Trashget Hardware uses a number of open source projects to work properly:
 
 ## Installation
 
-```sh
 [![N|Trashget](https://raw.githubusercontent.com/saipulmuiz/Trashget-Hardware/master/Image/Schematic%20-%20Design%20Project%20Trashget_bb.jpg)](https://cektrend.com)
 
+```sh
 On Going
 ```
 
