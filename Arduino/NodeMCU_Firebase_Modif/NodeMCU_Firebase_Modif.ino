@@ -3,16 +3,23 @@
 int led = D5;     // Connect LED to D5
 
 // Define Ultrasonik
-#define trigPin D0 //Trigger Pin
-#define echoPin D1 //Echo Pin
+#define trigPin D0 
+#define echoPin D1 
+#define trigPin2 D3
+#define echoPin2 D4
 int maximumRange = 100; //kebutuhan akan maksimal range
 int minimumRange = 00; //kebutuhan akan minimal range
-long duration, distance, capacity; //waktu untuk kalkulasi jarak
+long duration,duration2, distance, distance2, capacity, capacity2, overallCapacity; //waktu untuk kalkulasi jarak
 
 // Define Flame Sensor
-#define flameSensor D3
+#define flameSensor D2
 int Flame = HIGH;
 boolean isFire = false;
+
+// Define LED
+#define ledRed D5
+#define ledYellow D6
+#define ledGreen D7
 
 //Define FirebaseESP8266 data object
 #define FIREBASE_HOST "apesh-app-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -20,18 +27,21 @@ boolean isFire = false;
 #define WIFI_SSID "SM-NET+"
 #define WIFI_PASSWORD "saipul123258"
 FirebaseData firebaseData;
-FirebaseData ledData;
-FirebaseJson json;
 
 void setup()
 {
   Serial.begin(9600);
 
   pinMode(led, OUTPUT);
+  pinMode(ledRed, OUTPUT);
+  pinMode(ledYellow, OUTPUT);
+  pinMode(ledGreen, OUTPUT);
 
   // Ultrasonik Init
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+  pinMode(trigPin2, OUTPUT);
+  pinMode(echoPin2, INPUT);
 
   // Flame Sensor Init
   pinMode(flameSensor, INPUT);
@@ -54,7 +64,7 @@ void setup()
 }
 
 void readSensor() {
-  // Ultrasonik Loop
+  // Ultrasonik 1 Loop
   digitalWrite(trigPin, LOW); delayMicroseconds(2);
   digitalWrite(trigPin, HIGH); delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
@@ -63,8 +73,17 @@ void readSensor() {
   distance = duration / 58.2;
   capacity = (distance * 100) / maximumRange;
 
+  // Ultrasonik 2 Loop
+  digitalWrite(trigPin2, LOW); delayMicroseconds(2);
+  digitalWrite(trigPin2, HIGH); delayMicroseconds(10);
+  digitalWrite(trigPin2, LOW);
+  duration2 = pulseIn(echoPin2, HIGH);
+  
+  distance2 = duration2 / 58.2;
+  capacity2 = (distance2 * 100) / maximumRange;
+
   Flame = digitalRead(flameSensor);
-  if (isnan(duration) || isnan(Flame)) {
+  if (isnan(duration) || isnan(duration2) || isnan(Flame)) {
     Serial.println(F("Failed to read from sensor!"));
     return;
   }
@@ -74,12 +93,41 @@ void readSensor() {
     Serial.println("Api Terdeteksi! ");
   } else {
     Firebase.setBool(firebaseData, "/FirebaseIOT/fire", false);
-    Firebase.setFloat(firebaseData, "/FirebaseIOT/capacity", capacity);
+    Firebase.setFloat(firebaseData, "/FirebaseIOT/organicCapacity", capacity);
+    Firebase.setFloat(firebaseData, "/FirebaseIOT/anorganicCapacity", capacity2);
     Serial.println("------------------------------");
     Serial.println("Set int test...");
-    Serial.print(distance); Serial.println(" cm");
+    Serial.print(distance); Serial.println(" cm - 1");
     Serial.print(capacity); Serial.println(" %");
+    Serial.print(distance2); Serial.println(" cm - 2");
+    Serial.print(capacity2); Serial.println(" %");
+    overallCapacity = (capacity + capacity2) / 2;
+    if (overallCapacity >= 0 && overallCapacity < 50) {
+        isGreenLed();
+    } else if (overallCapacity > 50 && overallCapacity < 80) {
+        isYellowLed();
+    } else if (overallCapacity > 80) {
+        isRedLed();
+    }
   }
+}
+
+void isRedLed() {
+    digitalWrite(ledRed, HIGH);
+    digitalWrite(ledYellow, LOW);
+    digitalWrite(ledGreen, LOW);
+}
+
+void isYellowLed() {
+    digitalWrite(ledRed, LOW);
+    digitalWrite(ledYellow, HIGH);
+    digitalWrite(ledGreen, LOW);
+}
+
+void isGreenLed() {
+    digitalWrite(ledRed, LOW);
+    digitalWrite(ledYellow, LOW);
+    digitalWrite(ledGreen, HIGH);
 }
 
 void loop() {
