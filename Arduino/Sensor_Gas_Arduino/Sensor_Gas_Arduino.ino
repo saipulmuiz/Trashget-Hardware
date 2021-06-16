@@ -1,18 +1,19 @@
-int Gas_analog = A0;    // used for ESP32
-int Gas_digital = 7;   // used for ESP32
-
-void setup() {
-  Serial.begin(115200);
-  pinMode(Gas_digital, INPUT);
+#include <MQ2.h>
+ 
+int pinAout = A0;
+int lpg_gas, co_gas, smoke_gas;
+ 
+MQ2 mq2(pinAout);
+ 
+void setup(){
+  Serial.begin(9600);
+  mq2.begin();
 }
-
-void loop() {
-  int gassensorAnalog = analogRead(Gas_analog);
-  int gassensorDigital = digitalRead(Gas_digital);
-
-  Serial.print("Gas Sensor: ");
-  Serial.println(gassensorAnalog);
-  Serial.print("Gas Class: ");
-  Serial.println(gassensorDigital);
+ 
+void loop(){
+  float* values= mq2.read(true);
+  lpg_gas = mq2.readLPG();
+  co_gas = mq2.readCO();
+  smoke_gas = mq2.readSmoke();
   delay(500);
 }

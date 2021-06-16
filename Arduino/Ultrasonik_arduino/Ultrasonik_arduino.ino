@@ -25,5 +25,5 @@ distance = duration/58.2;
 capacity = (distance * 100) / maximumRange;
 Serial.print(distance);Serial.println(" cm");
 Serial.print(capacity);Serial.println(" %");
-delay(1000);
+delay(500);
 }
