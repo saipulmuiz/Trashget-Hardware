@@ -6,9 +6,10 @@
 #define echoPin D1
 #define trigPin2 D2
 #define echoPin2 D3
-int maximumRange = 100; //kebutuhan akan maksimal range
-int minimumRange = 00; //kebutuhan akan minimal range
-long duration, duration2, distance, distance2, capacity, capacity2, overallCapacity; //waktu untuk kalkulasi jarak
+float maximumRange = 30.00; //kebutuhan akan maksimal range
+float tempLevel = 0, tempLevel2 = 0;
+int distance, distance2, capacity, capacity2, overallCapacity;
+long duration, duration2; //waktu untuk kalkulasi jarak
 
 // Define Flame Sensor
 #define flameSensor D4
@@ -75,9 +76,14 @@ void readSensor() {
   digitalWrite(trigPin, HIGH); delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
-
-  distance = duration / 58.2;
-  capacity = (distance * 100) / maximumRange;
+  distance = duration / 58.2; 
+  if(distance > maximumRange){
+      distance = maximumRange;
+    } else if (distance < 0){
+      distance = 0;
+    }
+  tempLevel = distance / maximumRange * 100;
+  capacity = 100 - tempLevel;
 
   // Ultrasonik 2 Loop
   digitalWrite(trigPin2, LOW); delayMicroseconds(2);
@@ -85,8 +91,15 @@ void readSensor() {
   digitalWrite(trigPin2, LOW);
   duration2 = pulseIn(echoPin2, HIGH);
 
-  distance2 = duration2 / 58.2;
-  capacity2 = (distance2 * 100) / maximumRange;
+  distance2 = duration2 / 58.2; 
+  if(distance2 > maximumRange){
+      distance2 = maximumRange;
+    }
+  else if(distance2 < 0){
+      distance2 = 0;
+    }
+  tempLevel2 = distance2/maximumRange * 100;
+  capacity2 = 100 - tempLevel2;
 
   float* values = mq2.read(true);
   co_gas = mq2.readCO();;
