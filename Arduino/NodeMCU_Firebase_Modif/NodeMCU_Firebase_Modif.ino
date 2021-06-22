@@ -30,7 +30,7 @@ MQ2 mq2(gasSensor);
 #define FIREBASE_AUTH "s9wFQlcAlrHFJtA5dnYqaMyQcMLqzZ2jnSBRVFfa"
 #define WIFI_SSID "FoXiFi"
 #define WIFI_PASSWORD "saipul123258"
-String PATH_IOT = "/FirebaseIOT";
+String PATH_IOT = "/trashes/TR-2305211943/data";
 FirebaseData firebaseData;
 
 void setup()
@@ -102,6 +102,7 @@ void readSensor() {
     Serial.println("Api Terdeteksi! ");
   } else {
     Firebase.setBool(firebaseData, PATH_IOT + "/fire", false);
+    Firebase.setBool(firebaseData, PATH_IOT + "/fireNotif", true);
     Firebase.setFloat(firebaseData, PATH_IOT + "/organicCapacity", capacity);
     Firebase.setFloat(firebaseData, PATH_IOT + "/anorganicCapacity", capacity2);
     Firebase.setFloat(firebaseData, PATH_IOT + "/kadarGas", co_gas);
@@ -115,10 +116,13 @@ void readSensor() {
     overallCapacity = (capacity + capacity2) / 2;
     if (overallCapacity >= 0 && overallCapacity < 50) {
       isGreenLed();
+      Firebase.setBool(firebaseData, PATH_IOT + "/notif", true);
     } else if (overallCapacity > 50 && overallCapacity < 80) {
       isYellowLed();
+      Firebase.setBool(firebaseData, PATH_IOT + "/notif", true);
     } else if (overallCapacity > 80) {
       isRedLed();
+      Firebase.setBool(firebaseData, PATH_IOT + "/notif", false);
     }
   }
 }
