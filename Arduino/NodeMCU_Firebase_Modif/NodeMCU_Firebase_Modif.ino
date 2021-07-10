@@ -6,7 +6,8 @@
 #define echoPin D1
 #define trigPin2 D2
 #define echoPin2 D3
-float maximumRange = 30.00; //kebutuhan akan maksimal range
+float maximumRangeOrganik = 00.00, maximumRangeAnorganik = 00.00; //kebutuhan akan maksimal range
+int address = 1;
 float tempLevel = 0, tempLevel2 = 0;
 int distance, distance2, capacity, capacity2, overallCapacity;
 long duration, duration2; //waktu untuk kalkulasi jarak
@@ -67,7 +68,14 @@ void setup()
   Serial.println();
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   Firebase.reconnectWiFi(true);
-
+  if (Firebase.getInt(firebaseData, PATH_IOT + "/tinggiBakOrganik")){
+    maximumRangeOrganik = firebaseData.intData();
+    Serial.print("maximum organik: "); Serial.println(maximumRangeOrganik);
+  } 
+  if(Firebase.getInt(firebaseData, PATH_IOT + "/tinggiBakAnorganik")){
+    maximumRangeAnorganik = firebaseData.intData();
+    Serial.print("maximum anorganik: "); Serial.println(maximumRangeAnorganik);
+  }
 }
 
 void readSensor() {
@@ -77,12 +85,12 @@ void readSensor() {
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = duration / 58.2; 
-  if(distance > maximumRange){
-      distance = maximumRange;
+  if(distance > maximumRangeOrganik){
+      distance = maximumRangeOrganik;
     } else if (distance < 0){
       distance = 0;
     }
-  tempLevel = distance / maximumRange * 100;
+  tempLevel = distance / maximumRangeOrganik * 100;
   capacity = 100 - tempLevel;
 
   // Ultrasonik 2 Loop
@@ -92,13 +100,13 @@ void readSensor() {
   duration2 = pulseIn(echoPin2, HIGH);
 
   distance2 = duration2 / 58.2; 
-  if(distance2 > maximumRange){
-      distance2 = maximumRange;
+  if(distance2 > maximumRangeAnorganik){
+      distance2 = maximumRangeAnorganik;
     }
   else if(distance2 < 0){
       distance2 = 0;
     }
-  tempLevel2 = distance2/maximumRange * 100;
+  tempLevel2 = distance2/maximumRangeAnorganik * 100;
   capacity2 = 100 - tempLevel2;
 
   float* values = mq2.read(true);
@@ -160,5 +168,5 @@ void isGreenLed() {
 
 void loop() {
   readSensor();
-  delay(1000);
+  delay(300);
 }
