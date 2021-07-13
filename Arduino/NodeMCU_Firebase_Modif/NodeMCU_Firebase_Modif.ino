@@ -7,7 +7,6 @@
 #define trigPin2 D2
 #define echoPin2 D3
 float maximumRangeOrganik = 00.00, maximumRangeAnorganik = 00.00; //kebutuhan akan maksimal range
-int address = 1;
 float tempLevel = 0, tempLevel2 = 0;
 int distance, distance2, capacity, capacity2, overallCapacity;
 long duration, duration2; //waktu untuk kalkulasi jarak
