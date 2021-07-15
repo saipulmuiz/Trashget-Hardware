@@ -8,7 +8,7 @@
 #define echoPin2 D3
 float maximumRangeOrganik = 00.00, maximumRangeAnorganik = 00.00; //kebutuhan akan maksimal range
 float tempLevel = 0, tempLevel2 = 0;
-int distance, distance2, capacity, capacity2, overallCapacity;
+int distance, distance2, capacity, capacity2, overallCapacity, toleransiCapacity = 20;
 long duration, duration2; //waktu untuk kalkulasi jarak
 
 // Define Flame Sensor
@@ -91,6 +91,11 @@ void readSensor() {
     }
   tempLevel = distance / maximumRangeOrganik * 100;
   capacity = 100 - tempLevel;
+  if(capacity == 0) {
+    capacity = 0;
+  } else if(capacity <= 80) {
+    capacity = capacity + toleransiCapacity;
+  }
 
   // Ultrasonik 2 Loop
   digitalWrite(trigPin2, LOW); delayMicroseconds(2);
@@ -105,8 +110,13 @@ void readSensor() {
   else if(distance2 < 0){
       distance2 = 0;
     }
-  tempLevel2 = distance2/maximumRangeAnorganik * 100;
+  tempLevel2 = distance2 / maximumRangeAnorganik * 100;
   capacity2 = 100 - tempLevel2;
+  if(capacity2 == 0) {
+    capacity2 = 0;
+  } else if(capacity2 <= 80) {
+    capacity2 = capacity2 + toleransiCapacity;
+  }
 
   float* values = mq2.read(true);
   co_gas = mq2.readCO();;
